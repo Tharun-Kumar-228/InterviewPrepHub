@@ -1,0 +1,15 @@
+{
+  "name": "interviewprep-hub",
+  "version": "1.0.0",
+  "description": "InterviewPrep Hub - Community platform for student interview prep",
+  "scripts": {
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "seed": "cd backend && npm run seed"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
