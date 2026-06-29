@@ -21,10 +21,10 @@ services:
   # Frontend Static Site
   - type: web
     name: interviewprep-frontend
-    env: static
+    runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build
-    publishDir: dist
+    staticPublishPath: dist
     routes:
       - type: rewrite
         source: /api/*
