@@ -45,10 +45,29 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-// Catch-all for undefined routes
-app.use('*', (req, res, next) => {
-  next(new ApiError(404, `API route '${req.originalUrl}' not found.`));
-});
+const path = require('path');
+
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production') {
+  // Set static folder
+  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+  // Handle all non-API routes by serving the index.html
+  app.get('*', (req, res) => {
+    if (req.originalUrl.startsWith('/api')) {
+      return res.status(404).json({
+        success: false,
+        message: `API route '${req.originalUrl}' not found.`
+      });
+    }
+    res.sendFile(path.resolve(__dirname, '../frontend', 'dist', 'index.html'));
+  });
+} else {
+  // Catch-all for undefined routes in development
+  app.use('*', (req, res, next) => {
+    next(new ApiError(404, `API route '${req.originalUrl}' not found.`));
+  });
+}
 
 // Centralized error handler
 app.use(errorHandler);
