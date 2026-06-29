@@ -47,10 +47,13 @@ app.use('/api/dashboard', dashboardRoutes);
 
 const path = require('path');
 
-// Serve static assets in production
-if (process.env.NODE_ENV === 'production') {
+const fs = require('fs');
+const distPath = path.join(__dirname, '../frontend/dist');
+
+// Serve static assets in production or if the build folder exists
+if (process.env.NODE_ENV === 'production' || fs.existsSync(distPath)) {
   // Set static folder
-  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+  app.use(express.static(distPath));
 
   // Handle all non-API routes by serving the index.html
   app.get('*', (req, res) => {
@@ -60,7 +63,7 @@ if (process.env.NODE_ENV === 'production') {
         message: `API route '${req.originalUrl}' not found.`
       });
     }
-    res.sendFile(path.resolve(__dirname, '../frontend', 'dist', 'index.html'));
+    res.sendFile(path.resolve(distPath, 'index.html'));
   });
 } else {
   // Catch-all for undefined routes in development
